@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Student List</title>
+
+<style>
+body{
+font-family: Arial;
+text-align:center;
+}
+
+ul{
+list-style:none;
+padding:0;
+}
+
+li{
+background:#f2f2f2;
+margin:5px;
+padding:10px;
+border-radius:5px;
+}
+</style>
+
+</head>
+
+<body>
+
+<h2>Student List</h2>
+
+<button onclick="loadData()">Load Students</button>
+
+<ul id="studentList"></ul>
+
+<script>
+
+function loadData(){
+
+fetch("data.txt")
+
+.then(response => response.text())
+
+.then(data => {
+
+let lines = data.split("\n");
+
+let list = document.getElementById("studentList");
+
+list.innerHTML="";
+
+lines.forEach(function(line){
+
+let li = document.createElement("li");
+
+li.textContent = line;
+
+list.appendChild(li);
+
+});
+
+});
+
+}
+
+</script>
+
+</body>
+</html>
