@@ -1,73 +1,13 @@
-let pages = []
-let currentPage = 0
+fetch("sample.docx")
+.then(response => response.arrayBuffer())
+.then(arrayBuffer => {
 
-document.getElementById("fileInput").addEventListener("change", function(e){
+mammoth.convertToHtml({arrayBuffer: arrayBuffer})
 
-let file = e.target.files[0]
+.then(result => {
 
-let reader = new FileReader()
-
-reader.onload = function(event){
-
-mammoth.convertToHtml({arrayBuffer:event.target.result})
-.then(function(result){
-
-let text = result.value
-
-pages = text.split("<p>").map(p => "<p>"+p)
-
-currentPage = 0
-
-showPage()
+document.getElementById("viewer").innerHTML = result.value;
 
 })
 
-}
-
-reader.readAsArrayBuffer(file)
-
-})
-
-function showPage(){
-
-document.getElementById("viewer").innerHTML = pages[currentPage] || ""
-
-document.getElementById("pageNum").textContent = currentPage + 1
-
-}
-
-function nextPage(){
-
-if(currentPage < pages.length-1){
-
-currentPage++
-
-showPage()
-
-}
-
-}
-
-function prevPage(){
-
-if(currentPage > 0){
-
-currentPage--
-
-showPage()
-
-}
-
-}
-
-function toggleDark(){
-
-document.body.classList.toggle("dark")
-
-}
-
-function toggleMenu(){
-
-document.getElementById("menu").classList.toggle("show")
-
-}
+});
