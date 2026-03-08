@@ -1,68 +1,54 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Student List</title>
 
-<style>
-body{
-font-family: Arial;
-text-align:center;
-}
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-ul{
-list-style:none;
-padding:0;
-}
+<title>Document Viewer</title>
 
-li{
-background:#f2f2f2;
-margin:5px;
-padding:10px;
-border-radius:5px;
-}
-</style>
+<link rel="stylesheet" href="style.css">
+
+<script src="https://unpkg.com/mammoth/mammoth.browser.min.js"></script>
 
 </head>
 
 <body>
 
-<h2>Student List</h2>
+<header>
 
-<button onclick="loadData()">Load Students</button>
+<div class="logo">Doc Viewer</div>
 
-<ul id="studentList"></ul>
+<button class="menu-btn" onclick="toggleMenu()">☰</button>
 
-<script>
+<nav id="menu">
+<a href="#">Home</a>
+<a href="#">Documents</a>
+<a href="#">About</a>
+</nav>
 
-function loadData(){
+<button onclick="toggleDark()">🌙</button>
 
-fetch("data.txt")
+</header>
 
-.then(response => response.text())
+<main>
 
-.then(data => {
+<input type="file" id="fileInput">
 
-let lines = data.split("\n");
+<div id="viewer"></div>
 
-let list = document.getElementById("studentList");
+<div class="pagination">
 
-list.innerHTML="";
+<button onclick="prevPage()">Previous</button>
 
-lines.forEach(function(line){
+<span id="pageNum">1</span>
 
-let li = document.createElement("li");
+<button onclick="nextPage()">Next</button>
 
-li.textContent = line;
+</div>
 
-list.appendChild(li);
+</main>
 
-});
-
-});
-
-}
-
-</script>
+<script src="script.js"></script>
 
 </body>
 </html>
