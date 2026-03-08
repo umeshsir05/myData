@@ -4,9 +4,7 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Document Viewer</title>
-
-<link rel="stylesheet" href="style.css">
+<title>DOCX Viewer</title>
 
 <script src="https://unpkg.com/mammoth/mammoth.browser.min.js"></script>
 
@@ -14,39 +12,9 @@
 
 <body>
 
-<header>
-
-<div class="logo">Doc Viewer</div>
-
-<button class="menu-btn" onclick="toggleMenu()">☰</button>
-
-<nav id="menu">
-<a href="#">Home</a>
-<a href="#">Documents</a>
-<a href="#">About</a>
-</nav>
-
-<button onclick="toggleDark()">🌙</button>
-
-</header>
-
-<main>
-
-<input type="file" id="fileInput">
+<h2>DOCX File Viewer</h2>
 
 <div id="viewer"></div>
-
-<div class="pagination">
-
-<button onclick="prevPage()">Previous</button>
-
-<span id="pageNum">1</span>
-
-<button onclick="nextPage()">Next</button>
-
-</div>
-
-</main>
 
 <script src="script.js"></script>
 
