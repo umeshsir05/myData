@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Word File Reader - Server Folder</title>
+    <title>Word File Reader - Server Folder (Fixed)</title>
     <style>
         * {
             margin: 0;
@@ -120,6 +120,15 @@
             color: white;
         }
 
+        .btn-success {
+            background: #28a745;
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #218838;
+        }
+
         .btn:disabled {
             opacity: 0.6;
             cursor: not-allowed;
@@ -136,6 +145,7 @@
             margin-bottom: 20px;
             border-bottom: 2px solid #e9ecef;
             padding-bottom: 10px;
+            flex-wrap: wrap;
         }
 
         .tab {
@@ -221,6 +231,56 @@
             margin-bottom: 20px;
         }
 
+        .success-message {
+            background: #d4edda;
+            color: #155724;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .success-message.active {
+            display: block;
+        }
+
+        .file-list {
+            margin-top: 20px;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            padding: 15px;
+        }
+
+        .file-list h3 {
+            margin-bottom: 10px;
+            color: #495057;
+        }
+
+        .file-list ul {
+            list-style: none;
+        }
+
+        .file-list li {
+            padding: 8px 10px;
+            border-bottom: 1px solid #e9ecef;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .file-list li:hover {
+            background: #f8f9fa;
+        }
+
+        .file-list li:last-child {
+            border-bottom: none;
+        }
+
+        .file-icon {
+            font-size: 20px;
+        }
+
         @media (max-width: 768px) {
             .container {
                 margin: 10px;
@@ -240,41 +300,70 @@
             }
         }
     </style>
+    <!-- Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.4.2/mammoth.browser.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
 </head>
 <body>
     <div class="container">
         <div class="header">
-            <h1>📄 MS Word File Reader</h1>
+            <h1>📄 MS Word File Reader (Fixed)</h1>
             <p>Server folder se MS Word file ko read karein</p>
         </div>
 
         <div class="file-section">
             <div class="file-path">
                 <i>📁</i>
-                <input type="text" id="filePath" placeholder="Server folder path (sample.txt)" value="sample.docx">
+                <input type="text" id="filePath" placeholder="Server folder path (document.docx)" value="sample.docx">
             </div>
             
             <div class="info-message">
-                <strong>Note:</strong> Browser directly .docx files nahi read kar sakta. Aap do tarike se file read kar sakte hain:
+                <strong>नया तरीका:</strong> अब .docx फाइलों को पढ़ने के लिए Mammoth.js का उपयोग किया जा रहा है:
                 <ol style="margin-top: 10px; margin-left: 20px;">
-                    <li><strong>PDF View:</strong> Agar file PDF format mein available ho</li>
-                    <li><strong>Text Extraction:</strong> docx library se text extract karke display karega</li>
+                    <li><strong>Mammoth.js</strong> .docx फाइल को HTML में बदलता है</li>
+                    <li><strong>Better extraction:</strong> फॉर्मेटिंग के साथ टेक्स्ट दिखाता है</li>
+                    <li><strong>Download option:</strong> फाइल डाउनलोड भी कर सकते हैं</li>
                 </ol>
             </div>
+
+            <div class="success-message" id="successMessage"></div>
 
             <div class="button-group">
                 <button class="btn btn-primary" onclick="readWordFile()">
                     <span>📖</span> File Read Karein
                 </button>
-                <button class="btn btn-secondary" onclick="openFileLocation()">
-                    <span>📂</span> File Location Open Karein
+                <button class="btn btn-success" onclick="downloadFile()">
+                    <span>⬇️</span> File Download Karein
                 </button>
+                <button class="btn btn-secondary" onclick="showSampleFiles()">
+                    <span>📋</span> Sample Files Dikhayein
+                </button>
+            </div>
+
+            <!-- Sample files list (hidden by default) -->
+            <div class="file-list" id="sampleFileList" style="display: none;">
+                <h3>📂 Sample Files:</h3>
+                <ul>
+                    <li onclick="setFilePath('sample.docx')">
+                        <span class="file-icon">📄</span> sample.docx
+                    </li>
+                    <li onclick="setFilePath('sample.pdf')">
+                        <span class="file-icon">📕</span> sample.pdf
+                    </li>
+                    <li onclick="setFilePath('sample.txt')">
+                        <span class="file-icon">📃</span> sample.txt
+                    </li>
+                    <li onclick="setFilePath('document.docx')">
+                        <span class="file-icon">📄</span> document.docx
+                    </li>
+                </ul>
             </div>
         </div>
 
         <div class="content-section">
             <div class="tab-container">
                 <div class="tab active" onclick="switchTab('text', event)">Text View</div>
+                <div class="tab" onclick="switchTab('html', event)">HTML View</div>
                 <div class="tab" onclick="switchTab('pdf', event)">PDF View</div>
                 <div class="tab" onclick="switchTab('raw', event)">Raw Content</div>
             </div>
@@ -290,6 +379,10 @@
                 <pre>File read karne ke liye upar diye gaye button par click karein.</pre>
             </div>
 
+            <div id="htmlContent" class="content-box" style="display: none;">
+                <div id="htmlViewer"></div>
+            </div>
+
             <div id="pdfContent" class="content-box" style="display: none;">
                 <iframe class="pdf-viewer" id="pdfViewer" title="PDF Viewer"></iframe>
             </div>
@@ -300,13 +393,12 @@
         </div>
     </div>
 
-    <!-- docx library CDN for .docx parsing -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/docx/7.1.1/docx.min.js"></script>
-    
     <script>
         let currentTab = 'text';
+        let currentFileData = null;
+        let currentFileType = '';
 
-        // Switch between tabs (text, pdf, raw)
+        // Switch between tabs
         function switchTab(tab, event) {
             currentTab = tab;
             
@@ -316,6 +408,7 @@
             
             // Show/hide content
             document.getElementById('textContent').style.display = tab === 'text' ? 'block' : 'none';
+            document.getElementById('htmlContent').style.display = tab === 'html' ? 'block' : 'none';
             document.getElementById('pdfContent').style.display = tab === 'pdf' ? 'block' : 'none';
             document.getElementById('rawContent').style.display = tab === 'raw' ? 'block' : 'none';
         }
@@ -331,45 +424,71 @@
             setTimeout(() => errorEl.classList.remove('active'), 5000);
         }
 
-        // Main function to read file based on path
+        function showSuccess(message) {
+            const successEl = document.getElementById('successMessage');
+            successEl.textContent = message;
+            successEl.classList.add('active');
+            setTimeout(() => successEl.classList.remove('active'), 3000);
+        }
+
+        function setFilePath(path) {
+            document.getElementById('filePath').value = path;
+            document.getElementById('sampleFileList').style.display = 'none';
+        }
+
+        function showSampleFiles() {
+            const list = document.getElementById('sampleFileList');
+            list.style.display = list.style.display === 'none' ? 'block' : 'none';
+        }
+
+        // Main function to read file
         async function readWordFile() {
             const filePath = document.getElementById('filePath').value.trim();
             
             if (!filePath) {
-                showError('Kripya file path dalein');
+                showError('कृपया file path दर्ज करें');
                 return;
             }
 
             showLoading(true);
 
             try {
-                // First check if file exists and is reachable (HEAD request)
-                const headResponse = await fetch(filePath, { method: 'HEAD' }).catch(err => {
-                    throw new Error('Network issue: Server se connect nahi ho pa raha');
-                });
-                
-                if (!headResponse.ok) {
-                    throw new Error('File nahi mili ya access nahi hai (HTTP ' + headResponse.status + ')');
-                }
-
-                // Determine file extension
+                // Check file extension
                 const extension = filePath.split('.').pop().toLowerCase();
+                currentFileType = extension;
+
+                // Fetch the file as ArrayBuffer for binary files
+                const response = await fetch(filePath, {
+                    method: 'GET',
+                    cache: 'no-cache'
+                });
+
+                if (!response.ok) {
+                    throw new Error(`File नहीं मिली (HTTP ${response.status})`);
+                }
 
                 if (extension === 'docx') {
-                    await readDocxFile(filePath);
+                    // For docx files, get ArrayBuffer and use mammoth
+                    const arrayBuffer = await response.arrayBuffer();
+                    await readDocxFile(arrayBuffer);
                 } else if (extension === 'pdf') {
-                    await readPdfFile(filePath);
+                    // For PDF files, get blob and create URL
+                    const blob = await response.blob();
+                    await readPdfFile(blob, filePath);
                 } else {
-                    // Try to read as plain text (for .txt, .md, etc.)
-                    await readAsText(filePath);
+                    // For text files, get text
+                    const text = await response.text();
+                    await readTextFile(text);
                 }
+
+                showSuccess('File सफलतापूर्वक read हो गई!');
 
             } catch (error) {
                 console.error('Error:', error);
-                showError('File read karne mein error: ' + error.message);
+                showError('File read करने में error: ' + error.message);
                 
-                // For demo/testing: if path includes 'demo' or on any error, show demo content
-                if (filePath.includes('demo') || filePath === 'sample.txt') {
+                // Demo content for testing
+                if (filePath.includes('sample') || filePath === 'sample.docx') {
                     showDemoContent();
                 }
             } finally {
@@ -377,91 +496,167 @@
             }
         }
 
-        // Read .docx file using docx library
-        async function readDocxFile(filePath) {
+        // Read docx file using Mammoth.js
+        async function readDocxFile(arrayBuffer) {
             try {
-                // Fetch the file as ArrayBuffer
-                const response = await fetch(filePath);
-                if (!response.ok) throw new Error('DOCX file fetch failed');
-                const arrayBuffer = await response.arrayBuffer();
-
-                // Use docx library to extract raw text
-                // Note: The library's extractRawText returns an object with text content
-                const result = await window.docx.extractRawText(arrayBuffer);
-                const extractedText = result || "DOCX content extracted, but empty.";
-
-                // Display in text and raw views
-                document.querySelector('#textContent pre').textContent = extractedText;
-                document.getElementById('rawText').textContent = extractedText;
+                // Convert to HTML using mammoth
+                const result = await mammoth.convertToHtml({ arrayBuffer: arrayBuffer });
+                const html = result.value;
+                const text = result.value.replace(/<[^>]*>/g, ' '); // Simple text extraction
                 
-                // For PDF view, create a simple HTML representation
-                createSimplePDFView(extractedText);
+                // Store for download
+                currentFileData = arrayBuffer;
+
+                // Display in different views
+                document.querySelector('#textContent pre').textContent = text;
+                document.getElementById('htmlViewer').innerHTML = html;
+                document.getElementById('rawText').textContent = html;
                 
+                // For PDF view, create simple HTML representation
+                createSimplePDFView(html, 'html');
+                
+                // Show HTML tab as default for docx
+                if (currentTab === 'text') {
+                    // Switch to HTML view for better display
+                    document.querySelectorAll('.tab')[1].click();
+                }
+
+                // Log any warnings
+                if (result.messages.length > 0) {
+                    console.log('Mammoth warnings:', result.messages);
+                }
+
             } catch (error) {
-                throw new Error('DOCX file read nahi ho paya: ' + error.message);
+                throw new Error('DOCX file read नहीं हो पाई: ' + error.message);
             }
         }
 
-        // Handle PDF files: embed in iframe
-        async function readPdfFile(filePath) {
-            // Set iframe src to display PDF (browser's built-in viewer)
-            document.getElementById('pdfViewer').src = filePath;
-            // Show a message in text view
-            document.querySelector('#textContent pre').textContent = 'PDF file ko dekhne ke liye "PDF View" tab par jayein.';
-            // Raw view can show a note
-            document.getElementById('rawText').textContent = 'PDF raw content display nahi kiya ja sakta.';
-        }
-
-        // Read any file as plain text (fallback)
-        async function readAsText(filePath) {
-            const response = await fetch(filePath);
-            if (!response.ok) throw new Error('Text file fetch failed');
-            const text = await response.text();
+        // Read PDF file
+        async function readPdfFile(blob, filePath) {
+            const url = URL.createObjectURL(blob);
+            document.getElementById('pdfViewer').src = url;
+            document.querySelector('#textContent pre').textContent = 'PDF file देखने के लिए PDF View टैब पर जाएं।';
+            document.getElementById('rawText').textContent = 'PDF raw content display नहीं किया जा सकता।';
             
-            document.querySelector('#textContent pre').textContent = text;
-            document.getElementById('rawText').textContent = text;
-            // For PDF tab, embed as simple HTML
-            createSimplePDFView(text);
+            // Store for download
+            currentFileData = blob;
         }
 
-        // Helper to create a simple HTML document for PDF tab (since we don't have a real PDF)
-        function createSimplePDFView(text) {
-            const htmlContent = `
+        // Read text file
+        async function readTextFile(text) {
+            document.querySelector('#textContent pre').textContent = text;
+            document.getElementById('htmlViewer').innerHTML = `<pre>${escapeHtml(text)}</pre>`;
+            document.getElementById('rawText').textContent = text;
+            createSimplePDFView(text, 'text');
+            
+            // Store for download
+            currentFileData = new Blob([text], { type: 'text/plain' });
+        }
+
+        // Download current file
+        function downloadFile() {
+            const filePath = document.getElementById('filePath').value.trim();
+            
+            if (!filePath) {
+                showError('पहले file path दर्ज करें');
+                return;
+            }
+
+            if (currentFileData) {
+                const fileName = filePath.split('/').pop() || 'download';
+                const blob = currentFileData instanceof Blob ? currentFileData : new Blob([currentFileData]);
+                saveAs(blob, fileName);
+                showSuccess('File download हो रही है!');
+            } else {
+                // If no stored data, just open in new tab
+                window.open(filePath, '_blank');
+            }
+        }
+
+        // Create simple PDF view (HTML based)
+        function createSimplePDFView(content, type) {
+            let htmlContent;
+            
+            if (type === 'html') {
+                htmlContent = content;
+            } else {
+                htmlContent = `<pre>${escapeHtml(content)}</pre>`;
+            }
+
+            const fullHtml = `
+                <!DOCTYPE html>
                 <html>
                 <head>
+                    <meta charset="UTF-8">
                     <style>
-                        body { font-family: Arial, sans-serif; padding: 20px; background: white; }
-                        pre { white-space: pre-wrap; word-wrap: break-word; font-size: 14px; }
+                        body { 
+                            font-family: Arial, sans-serif; 
+                            padding: 20px; 
+                            background: white;
+                            line-height: 1.6;
+                        }
+                        pre { 
+                            white-space: pre-wrap; 
+                            word-wrap: break-word; 
+                            font-size: 14px;
+                        }
                     </style>
                 </head>
                 <body>
-                    <pre>${escapeHtml(text)}</pre>
+                    ${htmlContent}
                 </body>
                 </html>
             `;
             
-            const blob = new Blob([htmlContent], { type: 'text/html' });
+            const blob = new Blob([fullHtml], { type: 'text/html' });
             const url = URL.createObjectURL(blob);
             document.getElementById('pdfViewer').src = url;
-            // Clean up previous object URL if any (optional, but good practice)
-            // We'll just set new src, browser will release old one on unload
         }
 
-        // Simple escape to prevent XSS in PDF view
+        // Escape HTML to prevent XSS
         function escapeHtml(unsafe) {
-            return unsafe.replace(/[&<>"']/g, function(m) {
-                if (m === '&') return '&amp;';
-                if (m === '<') return '&lt;';
-                if (m === '>') return '&gt;';
-                if (m === '"') return '&quot;';
-                if (m === "'") return '&#039;';
-                return m;
-            });
+            if (!unsafe) return '';
+            return unsafe
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
         }
 
-        // Demo content when file not found (for testing)
+        // Demo content for testing
         function showDemoContent() {
-            const demoContent = `यह एक डेमो MS Word फाइल है।
+            const demoHtml = `
+                <h2>📄 डेमो MS Word फाइल</h2>
+                <p>यह एक <strong>डेमो</strong> MS Word फाइल है।</p>
+                
+                <h3>महत्वपूर्ण जानकारी:</h3>
+                <ul>
+                    <li>पहला बिंदु</li>
+                    <li>दूसरा बिंदु</li>
+                    <li>तीसरा बिंदु</li>
+                </ul>
+
+                <p>यह फाइल server folder में store है और website के through read की जा सकती है।</p>
+                
+                <h3>फॉर्मेटिंग उदाहरण:</h3>
+                <p><i>इटैलिक टेक्स्ट</i> और <b>बोल्ड टेक्स्ट</b></p>
+                
+                <table border="1" cellpadding="5" style="border-collapse: collapse;">
+                    <tr>
+                        <th>Header 1</th>
+                        <th>Header 2</th>
+                    </tr>
+                    <tr>
+                        <td>Cell 1</td>
+                        <td>Cell 2</td>
+                    </tr>
+                </table>
+                
+                <p>— समाप्त —</p>
+            `;
+
+            const demoText = `यह एक डेमो MS Word फाइल है।
             
 इस फाइल में कुछ महत्वपूर्ण जानकारी है:
 
@@ -471,42 +666,27 @@
 
 यह फाइल server folder में store है और website के through read ki ja sakti hai.
 
-आप इस content को text, pdf aur raw format mein dekh sakte hain.
+आप इस content को text, pdf aur raw format mein dekh sakte hain.`;
 
---- समाप्त ---`;
-
-            document.querySelector('#textContent pre').textContent = demoContent;
-            document.getElementById('rawText').textContent = demoContent;
-            createSimplePDFView(demoContent);
+            document.querySelector('#textContent pre').textContent = demoText;
+            document.getElementById('htmlViewer').innerHTML = demoHtml;
+            document.getElementById('rawText').textContent = demoHtml;
+            createSimplePDFView(demoHtml, 'html');
+            
+            // Store demo data
+            currentFileData = new Blob([demoText], { type: 'text/plain' });
         }
 
-        // Open file location (attempts to open directory in new tab)
-        function openFileLocation() {
-            const filePath = document.getElementById('filePath').value.trim();
-            
-            if (filePath) {
-                // Extract directory path (everything before last '/')
-                const lastSlash = filePath.lastIndexOf('/');
-                if (lastSlash !== -1) {
-                    const directoryPath = filePath.substring(0, lastSlash);
-                    // Try to open directory (may not work due to browser security)
-                    window.open(directoryPath, '_blank');
-                } else {
-                    // No slash, maybe just filename — open current origin
-                    window.open('/', '_blank');
-                }
-            } else {
-                showError('Pehle file path dalein');
-            }
-            
-            showError('File location khulne mein problem ho sakti hai. Browser security restrictions ki wajah se.');
-        }
-
-        // Check server connectivity on load (optional)
+        // Check server on load
         window.addEventListener('load', () => {
-            fetch(window.location.origin, { method: 'HEAD' })
+            // Try to fetch a test file
+            fetch('sample.docx', { method: 'HEAD' })
                 .then(() => console.log('Server accessible'))
-                .catch(() => showError('Server se connect nahi ho pa raha. Local file testing?'));
+                .catch(() => {
+                    // Show demo content if server not accessible
+                    showDemoContent();
+                    showError('Server से connect नहीं हो पा रहा। डेमो कंटेंट दिखाया जा रहा है।');
+                });
         });
     </script>
 </body>
