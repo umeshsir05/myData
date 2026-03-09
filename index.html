@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Word File Reader - Server Folder (Fixed)</title>
+    <title>Word File Reader - Secure Access</title>
     <style>
         * {
             margin: 0;
@@ -16,33 +16,185 @@
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
             padding: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
+        /* Login Container */
+        .login-container {
+            max-width: 400px;
+            width: 100%;
             background: white;
             border-radius: 15px;
             box-shadow: 0 20px 60px rgba(0,0,0,0.3);
             overflow: hidden;
+            animation: slideIn 0.5s ease;
         }
 
-        .header {
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .login-header {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
-            padding: 30px;
+            padding: 40px 30px;
             text-align: center;
         }
 
-        .header h1 {
-            font-size: 2.5em;
+        .login-header h2 {
+            font-size: 2em;
             margin-bottom: 10px;
+        }
+
+        .login-header p {
+            opacity: 0.95;
+            font-size: 1.1em;
+        }
+
+        .login-form {
+            padding: 40px 30px;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #495057;
+            font-weight: 600;
+            font-size: 0.95em;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+
+        .input-group input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .password-input {
+            position: relative;
+        }
+
+        .toggle-password {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            color: #6c757d;
+            font-size: 18px;
+        }
+
+        .login-btn {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+        }
+
+        .login-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .login-error {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: none;
+            text-align: center;
+            font-size: 0.95em;
+        }
+
+        .login-error.active {
+            display: block;
+            animation: shake 0.5s ease;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+            20%, 40%, 60%, 80% { transform: translateX(5px); }
+        }
+
+        /* Main Container (initially hidden) */
+        .main-container {
+            max-width: 1200px;
+            width: 100%;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+            display: none;
+        }
+
+        /* Header with logout button */
+        .app-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .app-header h1 {
+            font-size: 2em;
             font-weight: 600;
         }
 
-        .header p {
+        .app-header p {
             font-size: 1.1em;
             opacity: 0.95;
+        }
+
+        .logout-btn {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 2px solid white;
+            padding: 10px 25px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .logout-btn:hover {
+            background: white;
+            color: #667eea;
         }
 
         .file-section {
@@ -281,12 +433,28 @@
             font-size: 20px;
         }
 
+        /* User info */
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .username-display {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 0.95em;
+        }
+
         @media (max-width: 768px) {
-            .container {
-                margin: 10px;
+            .app-header {
+                flex-direction: column;
+                text-align: center;
+                gap: 15px;
             }
             
-            .header h1 {
+            .app-header h1 {
                 font-size: 1.8em;
             }
             
@@ -298,6 +466,10 @@
                 width: 100%;
                 justify-content: center;
             }
+
+            .login-container {
+                margin: 10px;
+            }
         }
     </style>
     <!-- Libraries -->
@@ -305,10 +477,49 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
 </head>
 <body>
-    <div class="container">
-        <div class="header">
-            <h1>📄 MS Word File Reader (Fixed)</h1>
-            <p>Server folder se MS Word file ko read karein</p>
+    <!-- Login Container -->
+    <div class="login-container" id="loginContainer">
+        <div class="login-header">
+            <h2>🔐 Secure Login</h2>
+            <p>Word File Reader में लॉगिन करें</p>
+        </div>
+        <div class="login-form">
+            <div class="login-error" id="loginError">
+                ❌ गलत यूज़रनेम या पासवर्ड!
+            </div>
+            <div class="input-group">
+                <label>👤 यूज़रनेम</label>
+                <input type="text" id="username" placeholder="अपना यूज़रनेम दर्ज करें" value="admin">
+            </div>
+            <div class="input-group">
+                <label>🔑 पासवर्ड</label>
+                <div class="password-input">
+                    <input type="password" id="password" placeholder="अपना पासवर्ड दर्ज करें" value="password123">
+                    <span class="toggle-password" onclick="togglePassword()">👁️</span>
+                </div>
+            </div>
+            <div class="input-group" style="margin-top: 10px; font-size: 0.9em; color: #6c757d;">
+                <p>डेमो क्रेडेंशियल्स: admin / password123</p>
+            </div>
+            <button class="login-btn" onclick="handleLogin()">
+                <span>🔓</span> लॉगिन करें
+            </button>
+        </div>
+    </div>
+
+    <!-- Main Container (Hidden by default) -->
+    <div class="main-container" id="mainContainer">
+        <div class="app-header">
+            <div>
+                <h1>📄 MS Word File Reader</h1>
+                <p>Server folder se MS Word file ko read karein</p>
+            </div>
+            <div class="user-info">
+                <span class="username-display" id="loggedInUser">👤 admin</span>
+                <button class="logout-btn" onclick="handleLogout()">
+                    <span>🚪</span> लॉगआउट
+                </button>
+            </div>
         </div>
 
         <div class="file-section">
@@ -316,8 +527,6 @@
                 <i>📁</i>
                 <input type="text" id="filePath" placeholder="Server folder path (document.docx)" value="sample.docx">
             </div>
-            
-            
 
             <div class="success-message" id="successMessage"></div>
 
@@ -328,10 +537,12 @@
                 <button class="btn btn-success" onclick="downloadFile()">
                     <span>⬇️</span> File Download Karein
                 </button>
-                
+                <button class="btn btn-secondary" onclick="showSampleFiles()">
+                    <span>📂</span> Sample Files
+                </button>
             </div>
 
-            <!-- Sample files list (hidden by default) -->
+            <!-- Sample files list -->
             <div class="file-list" id="sampleFileList" style="display: none;">
                 <h3>📂 Sample Files:</h3>
                 <ul>
@@ -385,12 +596,126 @@
     </div>
 
     <script>
+        // User credentials (in real application, this should be server-side)
+        const VALID_USERS = [
+            { username: 'admin', password: 'password123', name: 'Admin' },
+            { username: 'user', password: 'user123', name: 'User' },
+            { username: 'demo', password: 'demo123', name: 'Demo User' }
+        ];
+
         let currentTab = 'text';
         let currentFileData = null;
         let currentFileType = '';
+        let isLoggedIn = false;
+
+        // Check if user is already logged in (session storage)
+        function checkLoginStatus() {
+            const loggedIn = sessionStorage.getItem('isLoggedIn');
+            if (loggedIn === 'true') {
+                const username = sessionStorage.getItem('username');
+                document.getElementById('loggedInUser').textContent = `👤 ${username}`;
+                showMainContainer();
+            }
+        }
+
+        // Handle login
+        function handleLogin() {
+            const username = document.getElementById('username').value.trim();
+            const password = document.getElementById('password').value.trim();
+            const loginError = document.getElementById('loginError');
+
+            // Find user
+            const user = VALID_USERS.find(u => u.username === username && u.password === password);
+
+            if (user) {
+                // Successful login
+                loginError.classList.remove('active');
+                
+                // Store in session storage
+                sessionStorage.setItem('isLoggedIn', 'true');
+                sessionStorage.setItem('username', user.name);
+                
+                // Update display
+                document.getElementById('loggedInUser').textContent = `👤 ${user.name}`;
+                
+                // Show main container
+                showMainContainer();
+                
+                // Clear password field
+                document.getElementById('password').value = '';
+            } else {
+                // Failed login
+                loginError.classList.add('active');
+                
+                // Shake animation
+                document.querySelector('.login-form').style.animation = 'shake 0.5s ease';
+                setTimeout(() => {
+                    document.querySelector('.login-form').style.animation = '';
+                }, 500);
+            }
+        }
+
+        // Handle logout
+        function handleLogout() {
+            // Clear session storage
+            sessionStorage.removeItem('isLoggedIn');
+            sessionStorage.removeItem('username');
+            
+            // Hide main container and show login
+            document.getElementById('mainContainer').style.display = 'none';
+            document.getElementById('loginContainer').style.display = 'block';
+            
+            // Clear form
+            document.getElementById('username').value = 'admin';
+            document.getElementById('password').value = '';
+            document.getElementById('loginError').classList.remove('active');
+        }
+
+        // Show main container and hide login
+        function showMainContainer() {
+            document.getElementById('loginContainer').style.display = 'none';
+            document.getElementById('mainContainer').style.display = 'block';
+            
+            // Reset content
+            resetContent();
+            
+            // Check server connection
+            checkServerConnection();
+        }
+
+        // Reset content to default
+        function resetContent() {
+            document.querySelector('#textContent pre').textContent = 'File read karne ke liye upar diye gaye button par click karein.';
+            document.getElementById('htmlViewer').innerHTML = '';
+            document.getElementById('rawText').textContent = '';
+            document.getElementById('pdfViewer').src = 'about:blank';
+            currentFileData = null;
+        }
+
+        // Toggle password visibility
+        function togglePassword() {
+            const passwordInput = document.getElementById('password');
+            const type = passwordInput.type === 'password' ? 'text' : 'password';
+            passwordInput.type = type;
+            
+            // Toggle eye icon
+            const toggleBtn = document.querySelector('.toggle-password');
+            toggleBtn.textContent = type === 'password' ? '👁️' : '👁️‍🗨️';
+        }
+
+        // Handle Enter key in login form
+        document.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter' && document.getElementById('loginContainer').style.display !== 'none') {
+                handleLogin();
+            }
+        });
 
         // Switch between tabs
         function switchTab(tab, event) {
+            if (!isLoggedIn && document.getElementById('mainContainer').style.display !== 'block') {
+                return;
+            }
+            
             currentTab = tab;
             
             // Update tab styles
@@ -434,6 +759,11 @@
 
         // Main function to read file
         async function readWordFile() {
+            if (!isLoggedIn && document.getElementById('mainContainer').style.display !== 'block') {
+                showError('पहले लॉगिन करें');
+                return;
+            }
+
             const filePath = document.getElementById('filePath').value.trim();
             
             if (!filePath) {
@@ -546,6 +876,11 @@
 
         // Download current file
         function downloadFile() {
+            if (!isLoggedIn && document.getElementById('mainContainer').style.display !== 'block') {
+                showError('पहले लॉगिन करें');
+                return;
+            }
+
             const filePath = document.getElementById('filePath').value.trim();
             
             if (!filePath) {
@@ -669,7 +1004,7 @@
         }
 
         // Check server on load
-        window.addEventListener('load', () => {
+        function checkServerConnection() {
             // Try to fetch a test file
             fetch('sample.docx', { method: 'HEAD' })
                 .then(() => console.log('Server accessible'))
@@ -678,6 +1013,11 @@
                     showDemoContent();
                     showError('Server से connect नहीं हो पा रहा। डेमो कंटेंट दिखाया जा रहा है।');
                 });
+        }
+
+        // Initialize on page load
+        window.addEventListener('load', () => {
+            checkLoginStatus();
         });
     </script>
 </body>
