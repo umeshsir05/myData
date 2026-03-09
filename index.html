@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Word File Reader - Server Folder</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.95;
+        }
+
+        .file-section {
+            padding: 30px;
+            background: #f8f9fa;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .file-path {
+            background: white;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            padding: 15px 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .file-path i {
+            color: #667eea;
+            font-size: 24px;
+        }
+
+        .file-path input {
+            flex: 1;
+            border: none;
+            outline: none;
+            font-size: 16px;
+            color: #495057;
+            background: transparent;
+        }
+
+        .file-path input::placeholder {
+            color: #adb5bd;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 12px 30px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: white;
+            color: #667eea;
+            border: 2px solid #667eea;
+        }
+
+        .btn-secondary:hover {
+            background: #667eea;
+            color: white;
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .content-section {
+            padding: 30px;
+        }
+
+        .tab-container {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #e9ecef;
+            padding-bottom: 10px;
+        }
+
+        .tab {
+            padding: 10px 20px;
+            cursor: pointer;
+            border-radius: 8px 8px 0 0;
+            font-weight: 600;
+            color: #6c757d;
+            transition: all 0.3s ease;
+        }
+
+        .tab.active {
+            color: #667eea;
+            border-bottom: 3px solid #667eea;
+        }
+
+        .content-box {
+            background: white;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            padding: 20px;
+            min-height: 400px;
+            max-height: 600px;
+            overflow-y: auto;
+        }
+
+        .content-box pre {
+            font-family: 'Courier New', monospace;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            color: #495057;
+        }
+
+        .content-box .pdf-viewer {
+            width: 100%;
+            height: 500px;
+            border: none;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 50px;
+        }
+
+        .loading.active {
+            display: block;
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid #f3f3f3;
+            border-top: 5px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .error-message {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+            display: none;
+        }
+
+        .error-message.active {
+            display: block;
+        }
+
+        .info-message {
+            background: #d1ecf1;
+            color: #0c5460;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                margin: 10px;
+            }
+            
+            .header h1 {
+                font-size: 1.8em;
+            }
+            
+            .button-group {
+                flex-direction: column;
+            }
+            
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📄 MS Word File Reader</h1>
+            <p>Server folder se MS Word file ko read karein</p>
+        </div>
+
+        <div class="file-section">
+            <div class="file-path">
+                <i>📁</i>
+                <input type="text" id="filePath" placeholder="Server folder path (document.txt)" value="sample.txt">
+            </div>
+            
+            <div class="info-message">
+                <strong>Note:</strong> Browser directly .docx files nahi read kar sakta. Aap do tarike se file read kar sakte hain:
+                <ol style="margin-top: 10px; margin-left: 20px;">
+                    <li><strong>PDF View:</strong> Agar file PDF format mein available ho</li>
+                    <li><strong>Text Extraction:</strong> docx library se text extract karke display karega</li>
+                </ol>
+            </div>
+
+            <div class="button-group">
+                <button class="btn btn-primary" onclick="readWordFile()">
+                    <span>📖</span> File Read Karein
+                </button>
+                <button class="btn btn-secondary" onclick="openFileLocation()">
+                    <span>📂</span> File Location Open Karein
+                </button>
+            </div>
+        </div>
+
+        <div class="content-section">
+            <div class="tab-container">
+                <div class="tab active" onclick="switchTab('text', event)">Text View</div>
+                <div class="tab" onclick="switchTab('pdf', event)">PDF View</div>
+                <div class="tab" onclick="switchTab('raw', event)">Raw Content</div>
+            </div>
+
+            <div class="loading" id="loading">
+                <div class="spinner"></div>
+                <p>File read ho rahi hai...</p>
+            </div>
+
+            <div class="error-message" id="error"></div>
+
+            <div id="textContent" class="content-box">
+                <pre>File read karne ke liye upar diye gaye button par click karein.</pre>
+            </div>
+
+            <div id="pdfContent" class="content-box" style="display: none;">
+                <iframe class="pdf-viewer" id="pdfViewer" title="PDF Viewer"></iframe>
+            </div>
+
+            <div id="rawContent" class="content-box" style="display: none;">
+                <pre id="rawText"></pre>
+            </div>
+        </div>
+    </div>
+
+    <!-- docx library CDN for .docx parsing -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/docx/7.1.1/docx.min.js"></script>
+    
+    <script>
+        let currentTab = 'text';
+
+        // Switch between tabs (text, pdf, raw)
+        function switchTab(tab, event) {
+            currentTab = tab;
+            
+            // Update tab styles
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            // Show/hide content
+            document.getElementById('textContent').style.display = tab === 'text' ? 'block' : 'none';
+            document.getElementById('pdfContent').style.display = tab === 'pdf' ? 'block' : 'none';
+            document.getElementById('rawContent').style.display = tab === 'raw' ? 'block' : 'none';
+        }
+
+        function showLoading(show) {
+            document.getElementById('loading').classList.toggle('active', show);
+        }
+
+        function showError(message) {
+            const errorEl = document.getElementById('error');
+            errorEl.textContent = message;
+            errorEl.classList.add('active');
+            setTimeout(() => errorEl.classList.remove('active'), 5000);
+        }
+
+        // Main function to read file based on path
+        async function readWordFile() {
+            const filePath = document.getElementById('filePath').value.trim();
+            
+            if (!filePath) {
+                showError('Kripya file path dalein');
+                return;
+            }
+
+            showLoading(true);
+
+            try {
+                // First check if file exists and is reachable (HEAD request)
+                const headResponse = await fetch(filePath, { method: 'HEAD' }).catch(err => {
+                    throw new Error('Network issue: Server se connect nahi ho pa raha');
+                });
+                
+                if (!headResponse.ok) {
+                    throw new Error('File nahi mili ya access nahi hai (HTTP ' + headResponse.status + ')');
+                }
+
+                // Determine file extension
+                const extension = filePath.split('.').pop().toLowerCase();
+
+                if (extension === 'docx') {
+                    await readDocxFile(filePath);
+                } else if (extension === 'pdf') {
+                    await readPdfFile(filePath);
+                } else {
+                    // Try to read as plain text (for .txt, .md, etc.)
+                    await readAsText(filePath);
+                }
+
+            } catch (error) {
+                console.error('Error:', error);
+                showError('File read karne mein error: ' + error.message);
+                
+                // For demo/testing: if path includes 'demo' or on any error, show demo content
+                if (filePath.includes('demo') || filePath === 'sample.txt') {
+                    showDemoContent();
+                }
+            } finally {
+                showLoading(false);
+            }
+        }
+
+        // Read .docx file using docx library
+        async function readDocxFile(filePath) {
+            try {
+                // Fetch the file as ArrayBuffer
+                const response = await fetch(filePath);
+                if (!response.ok) throw new Error('DOCX file fetch failed');
+                const arrayBuffer = await response.arrayBuffer();
+
+                // Use docx library to extract raw text
+                // Note: The library's extractRawText returns an object with text content
+                const result = await window.docx.extractRawText(arrayBuffer);
+                const extractedText = result || "DOCX content extracted, but empty.";
+
+                // Display in text and raw views
+                document.querySelector('#textContent pre').textContent = extractedText;
+                document.getElementById('rawText').textContent = extractedText;
+                
+                // For PDF view, create a simple HTML representation
+                createSimplePDFView(extractedText);
+                
+            } catch (error) {
+                throw new Error('DOCX file read nahi ho paya: ' + error.message);
+            }
+        }
+
+        // Handle PDF files: embed in iframe
+        async function readPdfFile(filePath) {
+            // Set iframe src to display PDF (browser's built-in viewer)
+            document.getElementById('pdfViewer').src = filePath;
+            // Show a message in text view
+            document.querySelector('#textContent pre').textContent = 'PDF file ko dekhne ke liye "PDF View" tab par jayein.';
+            // Raw view can show a note
+            document.getElementById('rawText').textContent = 'PDF raw content display nahi kiya ja sakta.';
+        }
+
+        // Read any file as plain text (fallback)
+        async function readAsText(filePath) {
+            const response = await fetch(filePath);
+            if (!response.ok) throw new Error('Text file fetch failed');
+            const text = await response.text();
+            
+            document.querySelector('#textContent pre').textContent = text;
+            document.getElementById('rawText').textContent = text;
+            // For PDF tab, embed as simple HTML
+            createSimplePDFView(text);
+        }
+
+        // Helper to create a simple HTML document for PDF tab (since we don't have a real PDF)
+        function createSimplePDFView(text) {
+            const htmlContent = `
+                <html>
+                <head>
+                    <style>
+                        body { font-family: Arial, sans-serif; padding: 20px; background: white; }
+                        pre { white-space: pre-wrap; word-wrap: break-word; font-size: 14px; }
+                    </style>
+                </head>
+                <body>
+                    <pre>${escapeHtml(text)}</pre>
+                </body>
+                </html>
+            `;
+            
+            const blob = new Blob([htmlContent], { type: 'text/html' });
+            const url = URL.createObjectURL(blob);
+            document.getElementById('pdfViewer').src = url;
+            // Clean up previous object URL if any (optional, but good practice)
+            // We'll just set new src, browser will release old one on unload
+        }
+
+        // Simple escape to prevent XSS in PDF view
+        function escapeHtml(unsafe) {
+            return unsafe.replace(/[&<>"']/g, function(m) {
+                if (m === '&') return '&amp;';
+                if (m === '<') return '&lt;';
+                if (m === '>') return '&gt;';
+                if (m === '"') return '&quot;';
+                if (m === "'") return '&#039;';
+                return m;
+            });
+        }
+
+        // Demo content when file not found (for testing)
+        function showDemoContent() {
+            const demoContent = `यह एक डेमो MS Word फाइल है।
+            
+इस फाइल में कुछ महत्वपूर्ण जानकारी है:
+
+1. पहला बिंदु
+2. दूसरा बिंदु
+3. तीसरा बिंदु
+
+यह फाइल server folder में store है और website के through read ki ja sakti hai.
+
+आप इस content को text, pdf aur raw format mein dekh sakte hain.
+
+--- समाप्त ---`;
+
+            document.querySelector('#textContent pre').textContent = demoContent;
+            document.getElementById('rawText').textContent = demoContent;
+            createSimplePDFView(demoContent);
+        }
+
+        // Open file location (attempts to open directory in new tab)
+        function openFileLocation() {
+            const filePath = document.getElementById('filePath').value.trim();
+            
+            if (filePath) {
+                // Extract directory path (everything before last '/')
+                const lastSlash = filePath.lastIndexOf('/');
+                if (lastSlash !== -1) {
+                    const directoryPath = filePath.substring(0, lastSlash);
+                    // Try to open directory (may not work due to browser security)
+                    window.open(directoryPath, '_blank');
+                } else {
+                    // No slash, maybe just filename — open current origin
+                    window.open('/', '_blank');
+                }
+            } else {
+                showError('Pehle file path dalein');
+            }
+            
+            showError('File location khulne mein problem ho sakti hai. Browser security restrictions ki wajah se.');
+        }
+
+        // Check server connectivity on load (optional)
+        window.addEventListener('load', () => {
+            fetch(window.location.origin, { method: 'HEAD' })
+                .then(() => console.log('Server accessible'))
+                .catch(() => showError('Server se connect nahi ho pa raha. Local file testing?'));
+        });
+    </script>
+</body>
+</html>
