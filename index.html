@@ -481,20 +481,20 @@
     <div class="login-container" id="loginContainer">
         <div class="login-header">
             <h2>🔐 Secure Login</h2>
-            <p>Login into Word File Reader</p>
+            <p>Word File Reader में लॉगिन करें</p>
         </div>
         <div class="login-form">
             <div class="login-error" id="loginError">
-                ❌ Wrong username or password! 
+                ❌ गलत यूज़रनेम या पासवर्ड!
             </div>
             <div class="input-group">
                 <label>👤 Username</label>
-                <input type="text" id="username" placeholder="Enter your username " value="admin">
+                <input type="text" id="username" placeholder="अपना यूज़रनेम दर्ज करें" value="admin">
             </div>
             <div class="input-group">
                 <label>🔑 Password </label>
                 <div class="password-input">
-                    <input type="password" id="password" placeholder="Enter your password " value="elina">
+                    <input type="password" id="password" placeholder="अपना पासवर्ड दर्ज करें" value="elina">
                     <span class="toggle-password" onclick="togglePassword()">👁️</span>
                 </div>
             </div>
@@ -502,7 +502,7 @@
                 
             </div>
             <button class="login-btn" onclick="handleLogin()">
-                <span>🔓</span> Log in
+                <span>🔓</span> Login 
             </button>
         </div>
     </div>
@@ -517,7 +517,7 @@
             <div class="user-info">
                 <span class="username-display" id="loggedInUser">👤 admin</span>
                 <button class="logout-btn" onclick="handleLogout()">
-                    <span>🚪</span> Logout 
+                    <span>🚪</span> Logout
                 </button>
             </div>
         </div>
@@ -525,7 +525,7 @@
         <div class="file-section">
             <div class="file-path">
                 <i>📁</i>
-                <input type="text" id="filePath" placeholder="Server folder path (document.docx)" value="My Personal Data.docx">
+                <input type="text" id="filePath" placeholder="Server folder path (document.docx)" value="sample.docx">
             </div>
 
             <div class="success-message" id="successMessage"></div>
@@ -546,16 +546,16 @@
             <div class="file-list" id="sampleFileList" style="display: none;">
                 <h3>📂 Sample Files:</h3>
                 <ul>
-                    <li onclick="setFilePath('My Personal Data.docx')">
-                        <span class="file-icon">📄</span> My Personal Data.docx
+                    <li onclick="setFilePath('sample.docx')">
+                        <span class="file-icon">📄</span> sample.docx
                     </li>
-                    <li onclick="setFilePath('My Personal Data.docx')">
-                        <span class="file-icon">📕</span>My Personal Data.docx
+                    <li onclick="setFilePath('sample.pdf')">
+                        <span class="file-icon">📕</span> sample.pdf
                     </li>
-                    <li onclick="setFilePath('My Personal Data.docx')">
-                        <span class="file-icon">📃</span> My Personal Data.docx
+                    <li onclick="setFilePath('sample.txt')">
+                        <span class="file-icon">📃</span> sample.txt
                     </li>
-                    <li onclick="setFilePath('My Personal Data.docx')">
+                    <li onclick="setFilePath('document.docx')">
                         <span class="file-icon">📄</span> document.docx
                     </li>
                 </ul>
