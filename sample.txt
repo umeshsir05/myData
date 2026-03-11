@@ -1,5 +1,6 @@
 
 My personal data pwd: elina89
+-------------------------
 
 S-9769G-4954M-4025 K-8920 H-5256 P-0467
 Mpass 1997, 
@@ -10,14 +11,11 @@ PWD :Umesh8924@
 Mpin :7524
 -------------------------
 SBI Reward app:
-     user ID=7509873448 
-     pwd= Ukb8919@20
+user ID=7509873448 
+pwd= Ukb8919@20
 Member ID 21081240 
 -------------------------
-CRGB mTej bankApp :
-Login pin 7599
-Trans pin 7571
-Mpin 998750
+
 -------------------------
 PNB one
 UPI pin 759922
@@ -25,11 +23,11 @@ TPIN: 8898
 PNB bhim App pin 759921
 Mpin 4586
 -------------------------
-Maharashtra Mobile Banking = 
+Maharashtra Mobile Banking
 Pwd : 8920
 -------------------------
-HDFC BANK 
- Net banking 
+
+HDFC BANK Net banking 
 Customer Id: 184576100      
 Login pin:  9756
 HDFC app Pwd :Umesh7589@
