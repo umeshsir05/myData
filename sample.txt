@@ -100,7 +100,7 @@ SBI yono app
 Mpin :758946
 -------------------------
 IPPB BANK 
-Mpin - 7589
+Mpin - 7588
 -------------------------
 
 GROWW PDW: Ukb198924*
