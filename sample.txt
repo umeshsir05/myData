@@ -70,8 +70,9 @@ TEACHER ID=
 CBSE Registration :T24002736399
 CBSE Teacher Id : 2736399
 Joining date :01 July 2020
+----------
 UDICE
-TId: TP36458229
+Teacher Id: TP36458229
 -------------------------
 ESIC NO
 5919200119
