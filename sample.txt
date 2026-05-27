@@ -70,7 +70,7 @@ TEACHER ID=
 CBSE Registration :T24002736399
 CBSE Teacher Id : 2736399
 Joining date :01 July 2020
-----------
+-------------------------
 UDICE
 Teacher Id: TP36458229
 -------------------------
@@ -192,8 +192,12 @@ New Aadhar App
 
 Mpin : 758920
 -------------------------
+
 Digilocker
-
 Pin 758926
-
+-------------------------
+-------------------------
+Mahtari Vandan yojana 
+Reg.no. - MVY000868764
+Mobile :7509873448 
 -------------------------
