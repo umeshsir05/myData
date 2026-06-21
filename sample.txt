@@ -21,7 +21,7 @@ PNB one
 UPI pin 759922
 TPIN: 8898
 PNB bhim App pin 759921
-Mpin 4586
+Mpin 4587
 -------------------------
 Maharashtra Mobile Banking
 Pwd : 8920
