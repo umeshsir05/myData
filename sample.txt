@@ -19,7 +19,7 @@ Member ID 21081240
 -------------------------
 PNB one
 UPI pin 759922
-TPIN: 8898
+TPIN: 7898
 PNB bhim App pin 759921
 Mpin 4587
 -------------------------
