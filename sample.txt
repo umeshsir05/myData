@@ -8,7 +8,7 @@ Mpass 1997,
 UPI S750998-M9705-H7520
 Hdfc new – Cid :184576100
 PWD :Umesh8924@ 
-Mpin :7524
+
 -------------------------
 SBI Reward app:
 user ID=7509873448 
@@ -22,12 +22,10 @@ UPI pin 759922
 TPIN: 7898
 PNB bhim App pin 759921
 Mpin 4587
--------------------------
-Maharashtra Mobile Banking
-Pwd : 8920
--------------------------
+-------------------------
 
-HDFC BANK Net banking 
+HDFC BANK Net banking App
+-------------------------
 Customer Id: 184576100      
 Login pin:  7586
 HDFC app Pwd :Umesh7589@
