@@ -281,3 +281,15 @@ DEO 2026 recruitment
 User Id: CSPTCL26005461
 Pwd:Umesh89@ 
 ------------------------------
+------------------------------
+
+WEBSITE GENERATION PROMPT BY GEMINI:***
+
+prompt name- (Ukbanjare05@gmail.com) 
+1.Constitution - CONSTITUTION WEBSITE
+2. practice set - PRACTICE SET CDP
+3. geography - भूगोल वस्तुनिष्ठ प्रश्नोत्तरी
+4.Hindi - सामान्य हिंदी वस्तुनिष्ठ प्रश्नावली वेबसाइट
+4.history- भारतीय इतिहास MCQ वेबसाइट कोड
+5.Chhattisgarh gk-  छत्तीसगढ़ सामान्य ज्ञान क्विज़ वेबसाइट
+------------------------------
