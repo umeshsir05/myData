@@ -148,8 +148,9 @@ const VAULT_DATA = [
         fields: [
             { label: "Exam Cell Email", value: "gldexamcell@gmail.com" },
             { label: "Exam Cell Pwd", value: "Gldexam@2026" },
-            { label: "GLD FB Email", value: "gldpublicschool@gmail.com" },
-            { label: "GLD FB Pwd", value: "pankaJ@2024" },
+            { label: "GLD Email", value: "gldpublicschool@gmail.com" },
+            { label: "GLD Email Pwd", value: "Pankaj@123" },
+            { label: "GLD FB Pwd (Old)", value: "pankaJ@2024" },
             { label: "GLD FB Info", value: "9827500065 / meenabai" },
             { label: "GLD WiFi Password", value: "GLD@16270" }
         ]
