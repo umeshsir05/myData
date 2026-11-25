@@ -290,11 +290,18 @@ body {
 }
 
 .topbar {
+    position: sticky;
+    top: 0;
+    z-index: 80;
+    background-color: var(--bg-dark);
+    padding: 16px 0;
+    margin-top: -16px;
+    margin-bottom: 24px;
+    border-bottom: 1px solid var(--border);
     display: flex;
     justify-content: space-between;
     align-items: center;
     gap: 16px;
-    margin-bottom: 28px;
     flex-wrap: wrap;
 }
 
