@@ -128,7 +128,10 @@ const VAULT_DATA = [
             { label: "CBSE Registration", value: "T24002736399" },
             { label: "CBSE Teacher ID", value: "2736399" },
             { label: "Joining Date", value: "01 July 2020" },
-            { label: "UDISE Teacher ID", value: "TP36458229" }
+            { label: "UDISE Teacher ID", value: "TP36458229" },
+             { label: "CG TET 2024", value: "PASS" },
+            { label: "CG TET ROLL No", value: "18231185" },
+            { label: "CG TET MARKS", value: "90" }
         ]
     },
     {
